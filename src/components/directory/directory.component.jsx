@@ -13,7 +13,7 @@ import './directory.styles.scss';
                     title: 'hats',
                     imageUrl: 'https://i.ibb.co/cvpntL1/hats.png',
                     id: 1,
-                    linkUrl: 'shop/hats'
+                    linkUrl: 'hats'
                   },
                   {
                     title: 'jackets',
@@ -49,9 +49,12 @@ import './directory.styles.scss';
          return (
              <div className="directory-menu">
                  {
-                     this.state.sections.map(({title, imageUrl, id, size}) => (
-                         <MenuItem key={id} title={title} imageUrl={imageUrl} size={size}/>
-                     ))
+                    //  this.state.sections.map(({title, imageUrl, id, size}) => (
+                    //      <MenuItem key={id} title={title} imageUrl={imageUrl} size={size}/>
+                    //  ))   they are equivalent
+                     this.state.sections.map(({id, ...otherSectionProps}) =>
+                     <MenuItem key={id} {...otherSectionProps}/>
+                 )
                  }
              </div>
          )
