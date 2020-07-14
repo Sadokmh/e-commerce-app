@@ -20,30 +20,19 @@ const HatsPage = () => (
 class App extends React.Component {
   unsubscribeFromAuth = null;
 
-  constructor() {
-    super();
-
-    this.state = {
-      currentUser: null
-    };
-  }
-
   componentDidMount() {
+    const {setCurrentUser} = this.props;
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
         userRef.onSnapshot(snapshot => {
-           this.setState({
-             currentUser: {
+           this.props.setCurrentUser({
                id: snapshot.id,
                ...snapshot.data()
-             }
-           }, () => { //callback that triggers after setState
-            console.log(this.state);
            });
         });
       }
-      this.setState({ currentUser: userAuth });
+      setCurrentUser(userAuth);
 
     });
   }
@@ -57,7 +46,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
@@ -69,8 +58,8 @@ class App extends React.Component {
   
 }
 
-// const mapDispatchToProps = dispatch => ({
-//   setCurrentUser: user => dispatch(setCurrentUser(user))
-// })
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+})
 
- export default App //connect(null, mapDispatchToProps)(App);
+ export default  connect(null, mapDispatchToProps)(App);
