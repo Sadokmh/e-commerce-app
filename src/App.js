@@ -4,7 +4,7 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-sign-up/sign-in-sign-up.component';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument, addCollectionsAndDocuments } from './firebase/firebase.utils';
 import { createStructuredSelector } from 'reselect';
 
 import { Switch, Route, Redirect } from 'react-router-dom';
@@ -13,6 +13,7 @@ import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selector';
 import checkoutComponent from './pages/checkout/checkout.component';
 import CheckoutPage from './pages/checkout/checkout.component';
+import { selectCollectionsForPreview } from './redux/shop/shop.selector';
 
 const HatsPage = () => (
   <div>
@@ -24,7 +25,7 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const {setCurrentUser} = this.props;
+    const {setCurrentUser, collections} = this.props;
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
@@ -36,7 +37,7 @@ class App extends React.Component {
         });
       }
       setCurrentUser(userAuth);
-
+      //addCollectionsAndDocuments('collections', collections.map(({title, items}) => ({title,items}))); we just did that once to add our collections to Firestore DB;
     });
   }
 
@@ -77,7 +78,8 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser,
+  collections: selectCollectionsForPreview
 });
 
  export default  connect(mapStateToProps, mapDispatchToProps)(App);
