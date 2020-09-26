@@ -1,9 +1,8 @@
 import ShopActionsTypes from "./shop.types";
 
-const { default: SHOP_DATA } = require("../../pages/shop/shop.data");
 
 const INITIAL_STATE = {
-    collections: SHOP_DATA
+    collections: null
 };
 
 const shopReducer = (state = INITIAL_STATE, action) => {
