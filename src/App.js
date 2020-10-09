@@ -4,14 +4,12 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-sign-up/sign-in-sign-up.component';
-import { auth, createUserProfileDocument, addCollectionsAndDocuments } from './firebase/firebase.utils';
 import { createStructuredSelector } from 'reselect';
 
 import { Switch, Route, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
-import { setCurrentUser } from './redux/user/user.actions';
+import { checkUserSession } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selector';
-import checkoutComponent from './pages/checkout/checkout.component';
 import CheckoutPage from './pages/checkout/checkout.component';
 import { selectCollectionsForPreview } from './redux/shop/shop.selector';
 
@@ -25,20 +23,10 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    const {setCurrentUser, collections} = this.props;
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth);
-        userRef.onSnapshot(snapshot => {
-           this.props.setCurrentUser({
-               id: snapshot.id,
-               ...snapshot.data()
-           });
-        });
-      }
-      setCurrentUser(userAuth);
-      //addCollectionsAndDocuments('collections', collections.map(({title, items}) => ({title,items}))); we just did that once to add our collections to Firestore DB;
-    });
+    const {checkUserSession} = this.props;
+
+    checkUserSession();
+    
   }
 
   componentWillUnmount() {
@@ -74,7 +62,7 @@ class App extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user))
+  checkUserSession: () => dispatch(checkUserSession())
 });
 
 const mapStateToProps = createStructuredSelector({

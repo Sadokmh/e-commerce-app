@@ -1,12 +1,5 @@
 import { createSelector } from "reselect";
 
-const COLLECTION_ID_MAP = {
-  hats: 1,
-  sneakers: 2,
-  jackets: 3,
-  womens: 4,
-  mens: 5,
-};
 
 const shopSelector = (state) => state.shop;
 
@@ -25,3 +18,13 @@ export const selectCollection = (collectionUrlParam) =>
     [selectShopCollections], 
     (collections) => collections ? collections[collectionUrlParam] : null
   );
+
+export const selectIsCollectionFetching = createSelector(
+  [shopSelector],
+  shop => shop.isFetching 
+);
+
+export const selectIsCollectionsLoaded = createSelector(
+  [shopSelector],
+  shop => !!shop.collections //shorthand to indicate if shop.collection is true or false, if it is null then returns false else it returns true
+)
