@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
@@ -19,23 +19,21 @@ const HatsPage = () => (
   </div>
 )
 
-class App extends React.Component {
-  unsubscribeFromAuth = null;
+const App = ({ checkUserSession,  currentUser}) => {
+  const unsubscribeFromAuth = null;
 
-  componentDidMount() {
-    const {checkUserSession} = this.props;
+  useEffect(() => {
+    checkUserSession()
+  }, [])
 
-    checkUserSession();
-    
-  }
+  
 
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-  }
-
+  // componentWillUnmount() {
+  //   unsubscribeFromAuth();
+  // }
 
 
-  render() {
+
     return (
       <div className="test-test">
         <Header />
@@ -47,7 +45,7 @@ class App extends React.Component {
             exact 
             path='/signin' 
             render={() => 
-            this.props.currentUser
+            currentUser
              ?
               (<Redirect to='/'/>) 
              : 
@@ -57,7 +55,7 @@ class App extends React.Component {
         </Switch>
       </div>
     );
-  }
+  
   
 }
 
